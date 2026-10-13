@@ -16,7 +16,12 @@
 <div class="announcement">MADE WITH PASSION • SPICY THAT CRAVES FOR MORE</div>
 <header class="nav">
   <div class="brand">Syambal Gepuk<small>BY SYAFIQ</small></div>
-  <nav class="navlinks"><a href="#home">Home</a><a href="#shop">Shop</a><a href="#cerita">Our Story</a><a href="#faq">FAQ</a><a href="admin.html" style="color:var(--red); font-weight:bold;">Admin Dashboard ⚙️</a></nav>
+  <nav class="navlinks">
+    <a href="#home">Home</a>
+    <a href="#shop">Shop</a>
+    <a href="#cerita">Our Story</a>
+    <a href="#faq">FAQ</a>
+  </nav>
   <button class="cartbtn" onclick="openCart()">Cart <span class="cartcount" id="cartCount">0</span></button>
 </header>
 <main>
@@ -130,7 +135,7 @@
   // TETAPAN SUPABASE
   // ==========================================
   const SUPABASE_URL = 'https://gxfqxvdaaqbmnlkiudgx.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4ZnF4dmRhYXFibW5sa2l1ZGd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NjIyODcsImV4cCI6MjEwNzQzODI4N30.DRr3KUUOz8ZnwvT-AqWdHYigSVlRrVVeC4_P7-EtaSA'; // Ganti dengan key anda
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4ZnF4dmRhYXFibW5sa2l1ZGd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NjIyODcsImV4cCI6MjEwNzQzODI4N30.DRr3KUUOz8ZnwvT-AqWdHYigSVlRrVVeC4_P7-EtaSA';
 
   const { createClient } = supabase;
   const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -196,16 +201,40 @@
         <label>WhatsApp Number</label>
         <input type="tel" id="custPhone" placeholder="Example: 0123456789">
 
-        <label>Shipping Address</label>
-        <textarea id="custAddress" placeholder="Your full delivery address..."></textarea>
+        <label>Lokasi Penghantaran</label>
+        <select id="custLocation" onchange="toggleLocationField()">
+          <option value="Luar">Luar (Alamat Biasa)</option>
+          <option value="TVET MARA">TVET MARA (Dalam Asrama/Kolej)</option>
+        </select>
 
-        <button class="primary" onclick="processOrder()">PLACE ORDER & SAVE 💬</button>
+        <div id="dynamicAddressContainer" style="margin-top: 12px;"></div>
+
+        <button class="primary" onclick="processOrder()" style="margin-top: 15px;">PLACE ORDER & SAVE 💬</button>
       </div>
 
       <div class="notice" id="notice">
-        Order will be saved to your Admin Dashboard & sent to WhatsApp!
+        Order will be saved & sent directly to WhatsApp!
       </div>
     `;
+
+    toggleLocationField();
+  }
+
+  function toggleLocationField() {
+    const locationType = document.getElementById('custLocation').value;
+    const container = document.getElementById('dynamicAddressContainer');
+
+    if (locationType === 'TVET MARA') {
+      container.innerHTML = `
+        <label>No Bilik / Blok (TVET MARA)</label>
+        <input type="text" id="custRoom" placeholder="Contoh: Bilik A123, Blok C">
+      `;
+    } else {
+      container.innerHTML = `
+        <label>Alamat Penuh (Luar)</label>
+        <textarea id="custAddress" placeholder="Masukkan alamat penghantaran lengkap..."></textarea>
+      `;
+    }
   }
 
   function removeItem() {
@@ -230,10 +259,27 @@
     const name = document.getElementById('custName').value.trim();
     const email = document.getElementById('custEmail').value.trim();
     const phone = document.getElementById('custPhone').value.trim();
-    const address = document.getElementById('custAddress').value.trim();
+    const locationType = document.getElementById('custLocation').value;
 
-    if (!name || !email || !phone || !address) {
-      alert("Please fill in all details including email.");
+    let finalAddress = "";
+    if (locationType === 'TVET MARA') {
+      const room = document.getElementById('custRoom').value.trim();
+      if (!room) {
+        alert("Sila masukkan nombor bilik anda.");
+        return;
+      }
+      finalAddress = `[TVET MARA] No Bilik: ${room}`;
+    } else {
+      const address = document.getElementById('custAddress').value.trim();
+      if (!address) {
+        alert("Sila masukkan alamat penuh.");
+        return;
+      }
+      finalAddress = `[Luar] Alamat: ${address}`;
+    }
+
+    if (!name || !email || !phone) {
+      alert("Sila lengkapkan nama, emel, dan nombor telefon.");
       return;
     }
 
@@ -247,7 +293,7 @@
         { 
           customer_name: `${name} (${email})`, 
           customer_phone: phone, 
-          customer_address: address, 
+          customer_address: finalAddress, 
           item_name: item.name, 
           quantity: item.qty, 
           total_price: total 
@@ -256,7 +302,7 @@
 
     if (error) {
       console.error('DB error:', error);
-      alert('Failed to save order to database: ' + error.message);
+      alert('Gagal simpan ke database: ' + error.message);
       return;
     }
 
@@ -269,13 +315,13 @@
       `Name: ${name}\n` +
       `Email: ${email}\n` +
       `Phone: ${phone}\n` +
-      `Address: ${address}\n\n` +
+      `Delivery Type: ${finalAddress}\n\n` +
       `Please provide payment details. Thank you!`;
 
     const phoneNum = "601116902944";
     const waUrl = `https://wa.me/${phoneNum}?text=${encodeURIComponent(text)}`;
 
-    // 3. Terus buka WhatsApp tanpa disekat browser
+    // 3. Buka WhatsApp
     window.location.href = waUrl;
   }
 </script>
