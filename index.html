@@ -142,7 +142,7 @@
 
   let qty = 1;
   let cart = [];
-  const price = 15;
+  const price = 9.90; // Harga dikemas kini kepada RM 9.90
 
   function changeQty(v) {
     qty += v;
@@ -178,7 +178,7 @@
         <img src="WhatsApp Image 2026-10-13 at 12.52.17.jpeg">
         <div>
           <strong>${item.name}</strong>
-          <small>RM ${item.price} x ${item.qty}</small>
+          <small>RM ${item.price.toFixed(2)} x ${item.qty}</small>
           <button onclick="removeItem()">Remove</button>
         </div>
         <strong>RM ${total.toFixed(2)}</strong>
