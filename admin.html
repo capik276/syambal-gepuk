@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard - Syambal Gepuk</title>
+<!-- Supabase Client SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--cream:#f8f3e9;--paper:#fffdf8;--red:#9e2b20;--ink:#29231e;--muted:#766d63;--line:#e8dfd2;--green:#435b3d}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,Arial,sans-serif}
+.header{background:var(--paper);padding:20px 6%;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.header h1{margin:0;font-family:Georgia,serif;font-size:24px}
+.container{max-width:1100px;margin:30px auto;padding:0 6%}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:30px}
+.stat-card{background:var(--paper);padding:20px;border:1px solid var(--line);border-radius:4px}
+.stat-card h3{margin:0;font-size:13px;color:var(--muted);text-transform:uppercase}
+.stat-card p{margin:10px 0 0;font-size:28px;font-weight:bold;color:var(--red)}
+.table-wrapper{background:var(--paper);border:1px solid var(--line);border-radius:4px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;text-align:left;font-size:14px}
+th, td{padding:14px 18px;border-bottom:1px solid var(--line)}
+th{background:#f2eadb;font-weight:bold}
+tr:hover{background:#faf6ed}
+.badge{background:var(--green);color:white;padding:4px 8px;border-radius:20px;font-size:11px}
+.back-link{font-size:13px;text-decoration:none;color:var(--red);font-weight:bold}
+.refresh-btn{background:var(--red);color:white;border:none;padding:8px 14px;border-radius:4px;font-weight:bold;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚙️ Admin Dashboard (Orders)</h1>
+  <div>
+    <button class="refresh-btn" onclick="fetchOrders()">🔄 Refresh Data</button>
+    <a href="index.html" class="back-link" style="margin-left: 15px;">← Back to Shop</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="stats">
+    <div class="stat-card">
+      <h3>Total Orders</h3>
+      <p id="totalOrders">0</p>
+    </div>
+    <div class="stat-card">
+      <h3>Total Revenue</h3>
+      <p id="totalRevenue">RM 0.00</p>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Date / Time</th>
+          <th>Customer Info</th>
+          <th>Phone</th>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Total (RM)</th>
+          <th>Address</th>
+        </tr>
+      </thead>
+      <tbody id="orderTableBody">
+        <tr><td colspan="8" style="text-align:center; color:var(--muted);">Loading orders from database...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  // ==========================================
+  // TETAPAN SUPABASE
+  // ==========================================
+  const SUPABASE_URL = 'https://gxfqxvdaaqbmnlkiudgx.supabase.co';
+  
+  // PASTI TAMPAL KUNCI ANON SEBENAR DARI SUPABASE PROJECT SETTINGS > API
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4ZnF4dmRhYXFibW5sa2l1ZGd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NjIyODcsImV4cCI6MjEwNzQzODI4N30.DRr3KUUOz8ZnwvT-AqWdHYigSVlRrVVeC4_P7-EtaSA'; 
+
+  const { createClient } = supabase;
+  const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  async function fetchOrders() {
+    document.getElementById('orderTableBody').innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--muted);">Loading...</td></tr>`;
+
+    // Panggil jadual 'orders'
+    const { data, error } = await _supabase
+      .from('orders')
+      .select('*')
+      .order('id', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching orders:', error);
+      document.getElementById('orderTableBody').innerHTML = `
+        <tr>
+          <td colspan="8" style="text-align:center; color:red; padding: 20px;">
+            <strong>Gagal Memuatkan Data!</strong><br>
+            Mesej Ralat: ${error.message}<br>
+            <small style="color:#666;">Sila pastikan RLS di nyahaktifkan (Disable RLS) pada table 'orders' di Supabase.</small>
+          </td>
+        </tr>`;
+      return;
+    }
+
+    const tbody = document.getElementById('orderTableBody');
+    if (!data || data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--muted);">Tiada pesanan dijumpai lagi.</td></tr>`;
+      document.getElementById('totalOrders').innerText = '0';
+      document.getElementById('totalRevenue').innerText = 'RM 0.00';
+      return;
+    }
+
+    let totalRev = 0;
+    tbody.innerHTML = '';
+
+    data.forEach(order => {
+      totalRev += Number(order.total_price || 0);
+      const dateStr = order.created_at ? new Date(order.created_at).toLocaleString() : '-';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>#${order.id}</td>
+        <td><small>${dateStr}</small></td>
+        <td><strong>${order.customer_name || '-'}</strong></td>
+        <td>${order.customer_phone || '-'}</td>
+        <td>${order.item_name || '-'}</td>
+        <td><span class="badge">${order.quantity || 1}</span></td>
+        <td><strong>RM ${Number(order.total_price || 0).toFixed(2)}</strong></td>
+        <td><small>${order.customer_address || '-'}</small></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('totalOrders').innerText = data.length;
+    document.getElementById('totalRevenue').innerText = `RM ${totalRev.toFixed(2)}`;
+  }
+
+  // Muat data bila halaman dibuka
+  fetchOrders();
+</script>
+
+</body>
+</html>

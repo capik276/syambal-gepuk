@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Syambal Gepuk by Syafiq</title>
+<!-- Supabase Client SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--cream:#f8f3e9;--paper:#fffdf8;--red:#9e2b20;--red2:#c74731;--ink:#29231e;--muted:#766d63;--line:#e8dfd2;--green:#435b3d}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}.announcement{background:#342a22;color:#fff7eb;text-align:center;padding:10px 14px;font-size:12px;letter-spacing:.5px}.nav{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}.brand{font-family:Georgia,serif;font-size:23px;font-weight:bold;line-height:1}.brand small{display:block;font-family:Arial,sans-serif;font-size:10px;letter-spacing:2.2px;color:var(--red);margin-top:5px}.navlinks{display:flex;gap:26px;font-size:13px}.navlinks a{color:var(--ink);text-decoration:none}.cartbtn{border:1px solid var(--ink);background:transparent;border-radius:30px;padding:10px 15px;font-size:13px}.cartcount{background:var(--red);color:white;border-radius:50%;padding:3px 7px;margin-left:5px}.hero{max-width:1200px;margin:auto;padding:52px 6% 64px;display:grid;grid-template-columns:1fr 1.05fr;align-items:center;gap:50px}.eyebrow{color:var(--red);font-weight:700;font-size:11px;letter-spacing:2.5px;text-transform:uppercase}.hero h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(44px,5vw,69px);line-height:1.02;letter-spacing:-2px;margin:18px 0}.hero h1 em{color:var(--red);font-weight:500}.hero p{color:var(--muted);font-size:16px;line-height:1.8;max-width:440px}.hero-actions{display:flex;gap:12px;align-items:center;margin-top:26px;flex-wrap:wrap}.primary,.secondary{border-radius:4px;padding:14px 22px;border:1px solid var(--red);font-size:13px;font-weight:700}.primary{background:var(--red);color:white}.primary:hover{background:#7f2118}.secondary{background:transparent;color:var(--red)}.hero-note{font-size:12px;color:var(--muted);margin-top:18px}.hero-photo{position:relative}.hero-photo img{width:100%;display:block;border-radius:3px;box-shadow:14px 14px 0 #e8d9c4;object-fit:cover;aspect-ratio:1.4}.photo-label{position:absolute;bottom:-17px;left:-17px;background:var(--green);color:#fff;padding:14px 18px;font-family:Georgia,serif;font-size:16px}.ticker{background:#e9dfcf;border-top:1px solid #ddd0bd;border-bottom:1px solid #ddd0bd;padding:15px 10px;text-align:center;color:#5d493b;font-size:11px;letter-spacing:2px;text-transform:uppercase}.section{max-width:1120px;margin:auto;padding:75px 6%}.section-head{text-align:center;margin-bottom:35px}.section-head h2{font-family:Georgia,serif;font-size:38px;font-weight:500;margin:10px 0}.section-head p{color:var(--muted);font-size:14px}.product{display:grid;grid-template-columns:1fr 1fr;background:var(--paper);border:1px solid var(--line);max-width:850px;margin:auto}.product-image{background:#efe4d3;display:flex;align-items:center;justify-content:center;padding:22px}.product-image img{width:100%;height:100%;max-height:350px;object-fit:cover}.product-info{padding:35px}.tag{display:inline-block;background:#f2e5d7;color:var(--red);padding:6px 9px;font-size:10px;letter-spacing:1px;text-transform:uppercase}.product-info h3{font-family:Georgia,serif;font-weight:500;font-size:30px;margin:15px 0 8px}.stars{color:#a45a2b;font-size:13px}.price{font-size:25px;font-weight:700;margin:18px 0 4px}.subprice{font-size:12px;color:var(--muted)}.product-info p{font-size:14px;line-height:1.7;color:var(--muted)}.details{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.details span{font-size:11px;border:1px solid var(--line);padding:7px 9px;border-radius:30px}.qtyrow{display:flex;align-items:center;gap:12px;margin:20px 0}.qty{display:flex;border:1px solid var(--line);height:42px;align-items:center}.qty button{width:38px;height:40px;border:0;background:transparent;font-size:18px}.qty span{width:24px;text-align:center}.product-buttons{display:flex;gap:8px}.product-buttons button{flex:1}.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:42px}.trust div{text-align:center;padding:20px 12px;border-top:1px solid var(--line)}.trust strong{display:block;font-family:Georgia,serif;font-size:17px;font-weight:500;margin-bottom:8px}.trust span{font-size:12px;color:var(--muted);line-height:1.5}.story{background:#eee4d5}.story-inner{max-width:900px;margin:auto;text-align:center;padding:64px 6%}.story h2{font-family:Georgia,serif;font-size:34px;font-weight:500;margin:12px 0}.story p{color:#685d52;line-height:1.8;max-width:650px;margin:0 auto;font-size:14px}.faq{max-width:750px;margin:auto}.faq details{padding:18px 0;border-bottom:1px solid var(--line);font-size:14px}.faq summary{cursor:pointer;font-weight:700}.faq p{color:var(--muted);line-height:1.7}.footer{background:#302820;color:#f9f0e3;padding:35px 6%;display:flex;justify-content:space-between;gap:20px;align-items:center;font-size:12px}.footer small{color:#c5b6a3}.modalback{position:fixed;inset:0;background:#1c1712a8;display:none;z-index:10;align-items:stretch;justify-content:flex-end}.modalback.open{display:flex}.drawer{background:var(--paper);width:min(460px,100%);height:100%;padding:25px;overflow:auto;box-shadow:-10px 0 40px #0002}.drawerhead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:18px}.drawerhead h2{font-family:Georgia,serif;font-weight:500}.close{border:0;background:transparent;font-size:25px}.cartitem{display:grid;grid-template-columns:74px 1fr auto;gap:12px;padding:20px 0;border-bottom:1px solid var(--line);align-items:center}.cartitem img{width:74px;height:74px;object-fit:cover}.cartitem strong{font-size:14px}.cartitem small{display:block;color:var(--muted);margin-top:5px}.cartitem button{border:0;background:transparent;color:var(--red);font-size:12px}.totals{padding:18px 0;display:flex;justify-content:space-between;font-weight:700}.muted{color:var(--muted);font-size:13px;line-height:1.6}.checkoutform{display:none;border-top:1px solid var(--line);padding-top:18px}.checkoutform.show{display:block}.checkoutform label{display:block;font-size:12px;font-weight:700;margin:12px 0 6px}.checkoutform input,.checkoutform textarea,.checkoutform select{width:100%;padding:12px;border:1px solid var(--line);background:white;border-radius:3px}.checkoutform textarea{min-height:75px;resize:vertical}.checkoutform .primary{width:100%;margin-top:15px}.notice{background:#f2eadb;padding:12px;font-size:12px;line-height:1.5;margin-top:12px;display:none}.notice.show{display:block}
+@media(max-width:760px){.nav{padding:0 5%;height:66px}.navlinks{display:none}.hero{grid-template-columns:1fr;padding-top:36px;gap:32px}.hero h1{font-size:48px}.hero-photo{margin:0 8px 15px}.section{padding:55px 5%}.product{grid-template-columns:1fr}.product-image img{max-height:280px}.product-info{padding:25px}.trust{gap:8px}.trust strong{font-size:15px}.footer{flex-direction:column;text-align:center}.section-head h2{font-size:32px}}
+</style>
+</head>
+<body>
+<div class="announcement">MADE WITH PASSION • SPICY THAT CRAVES FOR MORE</div>
+<header class="nav">
+  <div class="brand">Syambal Gepuk<small>BY SYAFIQ</small></div>
+  <nav class="navlinks"><a href="#home">Home</a><a href="#shop">Shop</a><a href="#cerita">Our Story</a><a href="#faq">FAQ</a><a href="admin.html" style="color:var(--red); font-weight:bold;">Admin Dashboard ⚙️</a></nav>
+  <button class="cartbtn" onclick="openCart()">Cart <span class="cartcount" id="cartCount">0</span></button>
+</header>
+<main>
+<section class="hero" id="home">
+  <div>
+    <div class="eyebrow">Homemade Sambal • 200g</div>
+    <h1>Add more spice,<br><em>boost your appetite.</em></h1>
+    <p>Just one spoonful makes your hot rice extraordinary. Gepuk sambal for those who love it spicy, crunchy, and full of flavor.</p>
+    <div class="hero-actions"><a href="#shop"><button class="primary">BUY NOW ↗</button></a><a href="#cerita"><button class="secondary">OUR STORY</button></a></div>
+    <div class="hero-note">✓ Perfect to pair with hot rice, fried chicken, and your favorite dishes.</div>
+  </div>
+  <div class="hero-photo"><img src="WhatsApp Image 2026-10-13 at 12.52.17.jpeg" alt="Sambal Gepuk">
+    <div class="photo-label">Original Recipe • Fresh Chillies</div>
+  </div>
+</section>
+
+<div class="ticker">
+  🌶️ Muslim Made • No Preservatives • Long Lasting • Rich & Spicy
+</div>
+
+<section class="section" id="shop">
+  <div class="section-head">
+    <div class="eyebrow">POPULAR CHOICE</div>
+    <h2>Syambal Gepuk Special</h2>
+    <p>Authentic recipe blended with fresh chillies and generous crunchy peanuts.</p>
+  </div>
+
+  <div class="product">
+    <div class="product-image">
+      <img src="WhatsApp Image 2026-10-13 at 12.52.17.jpeg" alt="Sambal Gepuk">
+    </div>
+    <div class="product-info">
+      <span class="tag">HOT SELLER</span>
+      <h3>Syambal Gepuk Bottle</h3>
+      <div class="stars">★★★★★ 4.9 (500+ reviews)</div>
+      <div class="price">RM 15.00</div>
+      <div class="subprice">Net Weight: 200g / bottle</div>
+      <p>Aromas of fried shallots, peanuts/cashews, and coriander crushed with selected chillies. Addictively spicy!</p>
+
+      <div class="details">
+        <span>🌶️ Extra Spicy</span>
+        <span>🥜 Contains Peanuts</span>
+        <span>🧊 Lasts 3 Months</span>
+      </div>
+
+      <div class="qtyrow">
+        <span>Quantity:</span>
+        <div class="qty">
+          <button onclick="changeQty(-1)">-</button>
+          <span id="qtyVal">1</span>
+          <button onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+
+      <div class="product-buttons">
+        <button class="primary" onclick="addToCart()">ADD TO CART</button>
+        <button class="secondary" onclick="buyNow()">BUY NOW</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="trust">
+    <div><strong>🌶️ Fresh Chillies</strong><span>Using only the finest hand-picked red chillies.</span></div>
+    <div><strong>🧼 Clean & Halal</strong><span>Prepared meticulously following hygiene standards.</span></div>
+    <div><strong>📦 Safe Delivery</strong><span>Packed securely with thick bubble wrap.</span></div>
+  </div>
+</section>
+
+<section class="story" id="cerita">
+  <div class="story-inner">
+    <div class="eyebrow">FAMILY RECIPE</div>
+    <h2>"One spoonful is never enough, two makes it satisfying."</h2>
+    <p>Starting from Syafiq's home kitchen for personal meals, Syambal Gepuk has now become a favorite among thousands of spicy food lovers across Malaysia. We focus on crispiness, fragrant oil, and a well-balanced spice level.</p>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="section-head">
+    <h2>Frequently Asked Questions (FAQ)</h2>
+  </div>
+  <div class="faq">
+    <details><summary>How long can this sambal last?</summary><p>It can last up to 3 months at room temperature. Storing it in the refrigerator extends its shelf life. Always use a clean and dry spoon.</p></details>
+    <details><summary>Is this sambal very spicy?</summary><p>The spiciness level is 8/10. Perfect for true spice lovers while maintaining a savory, nutty flavor.</p></details>
+    <details><summary>How many days does shipping take?</summary><p>Orders are shipped Monday through Friday. Delivery usually takes 1-3 working days depending on your location.</p></details>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div>
+    <strong>Syambal Gepuk by Syafiq</strong>
+    <p>The ultimate homemade sambal for your meals.</p>
+  </div>
+  <div><small>© 2026 Syambal Gepuk. All Rights Reserved.</small></div>
+</footer>
+
+<div class="modalback" id="cartDrawer">
+  <div class="drawer">
+    <div class="drawerhead">
+      <h2>Your Cart</h2>
+      <button class="close" onclick="closeCart()">×</button>
+    </div>
+    <div id="cartContent">
+      <p class="muted" style="padding:20px 0;">Your cart is currently empty.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ==========================================
+  // TETAPAN SUPABASE
+  // ==========================================
+  const SUPABASE_URL = 'https://gxfqxvdaaqbmnlkiudgx.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4ZnF4dmRhYXFibW5sa2l1ZGd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NjIyODcsImV4cCI6MjEwNzQzODI4N30.DRr3KUUOz8ZnwvT-AqWdHYigSVlRrVVeC4_P7-EtaSA'; // Ganti dengan key anda
+
+  const { createClient } = supabase;
+  const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let qty = 1;
+  let cart = [];
+  const price = 15;
+
+  function changeQty(v) {
+    qty += v;
+    if (qty < 1) qty = 1;
+    document.getElementById('qtyVal').innerText = qty;
+  }
+
+  function addToCart() {
+    cart = [{ name: "Syambal Gepuk Bottle (200g)", qty: qty, price: price }];
+    updateCartUI();
+    openCart();
+  }
+
+  function buyNow() {
+    addToCart();
+  }
+
+  function updateCartUI() {
+    const count = cart.reduce((a, b) => a + b.qty, 0);
+    document.getElementById('cartCount').innerText = count;
+
+    const container = document.getElementById('cartContent');
+    if (cart.length === 0) {
+      container.innerHTML = '<p class="muted" style="padding:20px 0;">Your cart is currently empty.</p>';
+      return;
+    }
+
+    let item = cart[0];
+    let total = item.qty * item.price;
+
+    container.innerHTML = `
+      <div class="cartitem">
+        <img src="WhatsApp Image 2026-10-13 at 12.52.17.jpeg">
+        <div>
+          <strong>${item.name}</strong>
+          <small>RM ${item.price} x ${item.qty}</small>
+          <button onclick="removeItem()">Remove</button>
+        </div>
+        <strong>RM ${total.toFixed(2)}</strong>
+      </div>
+
+      <div class="totals">
+        <span>Total Amount:</span>
+        <span>RM ${total.toFixed(2)}</span>
+      </div>
+
+      <button class="primary" style="width:100%" onclick="showCheckout()">PROCEED TO CHECKOUT</button>
+
+      <div class="checkoutform" id="checkoutForm">
+        <label>Full Name</label>
+        <input type="text" id="custName" placeholder="Example: John Doe">
+
+        <label>Email Address</label>
+        <input type="email" id="custEmail" placeholder="Example: john@gmail.com">
+
+        <label>WhatsApp Number</label>
+        <input type="tel" id="custPhone" placeholder="Example: 0123456789">
+
+        <label>Shipping Address</label>
+        <textarea id="custAddress" placeholder="Your full delivery address..."></textarea>
+
+        <button class="primary" onclick="processOrder()">PLACE ORDER & SAVE 💬</button>
+      </div>
+
+      <div class="notice" id="notice">
+        Order will be saved to your Admin Dashboard & sent to WhatsApp!
+      </div>
+    `;
+  }
+
+  function removeItem() {
+    cart = [];
+    updateCartUI();
+  }
+
+  function openCart() {
+    document.getElementById('cartDrawer').classList.add('open');
+  }
+
+  function closeCart() {
+    document.getElementById('cartDrawer').classList.remove('open');
+  }
+
+  function showCheckout() {
+    document.getElementById('checkoutForm').classList.add('show');
+    document.getElementById('notice').classList.add('show');
+  }
+
+  async function processOrder() {
+    const name = document.getElementById('custName').value.trim();
+    const email = document.getElementById('custEmail').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    const address = document.getElementById('custAddress').value.trim();
+
+    if (!name || !email || !phone || !address) {
+      alert("Please fill in all details including email.");
+      return;
+    }
+
+    const item = cart[0];
+    const total = item.qty * item.price;
+
+    // 1. Simpan ke Supabase table 'orders'
+    const { error } = await _supabase
+      .from('orders')
+      .insert([
+        { 
+          customer_name: `${name} (${email})`, 
+          customer_phone: phone, 
+          customer_address: address, 
+          item_name: item.name, 
+          quantity: item.qty, 
+          total_price: total 
+        }
+      ]);
+
+    if (error) {
+      console.error('DB error:', error);
+      alert('Failed to save order to database: ' + error.message);
+      return;
+    }
+
+    // 2. Sediakan teks WhatsApp
+    const text = `Hi Syafiq! I would like to order Syambal Gepuk:\n\n` +
+      `*Order:* ${item.name}\n` +
+      `*Quantity:* ${item.qty}\n` +
+      `*Total:* RM ${total.toFixed(2)}\n\n` +
+      `*Customer Details:*\n` +
+      `Name: ${name}\n` +
+      `Email: ${email}\n` +
+      `Phone: ${phone}\n` +
+      `Address: ${address}\n\n` +
+      `Please provide payment details. Thank you!`;
+
+    const phoneNum = "601116902944";
+    const waUrl = `https://wa.me/${phoneNum}?text=${encodeURIComponent(text)}`;
+
+    // 3. Terus buka WhatsApp tanpa disekat browser
+    window.location.href = waUrl;
+  }
+</script>
+</body>
+</html>
